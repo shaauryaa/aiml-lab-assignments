@@ -27,7 +27,7 @@ notebooks, briefs and datasets stay in the course repo above.
 |---|---|---|---|---|---|
 | P01 | Your MLOps Workbench | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P01-workbench/README.md) · [P01.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P01-workbench/P01.ipynb) | [P01_S24CSEU0497.ipynb](P01_S24CSEU0497.ipynb) | [requirements](P01_requirements.txt) · [my_requirements](P01_my_requirements.txt) | 7 / 7 PASS |
 | P02 | Your First Honest Model | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/README.md) · [P02.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/P02.ipynb) | [P02_S24CSEU0497.ipynb](P02_S24CSEU0497.ipynb) | — | 9 / 9 PASS |
-| P03 | Choosing a Model Honestly | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/README.md) · [P03.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/P03.ipynb) | [P03_S24CSEU0497.ipynb](P03_S24CSEU0497.ipynb) | — | 8 / 8 PASS |
+| P03 | Choosing a Model Honestly | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/README.md) · [P03.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/P03.ipynb) | [P03_S24CSEU0497.ipynb](P03_S24CSEU0497.ipynb) | [PDF submission](P03_S24CSEU0497.pdf) | 8 / 8 PASS |
 
 P04–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md);
 P04 has now landed upstream and is not solved yet. This table gets a row as each one lands.
