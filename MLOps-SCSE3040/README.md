@@ -28,9 +28,10 @@ notebooks, briefs and datasets stay in the course repo above.
 | P01 | Your MLOps Workbench | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P01-workbench/README.md) · [P01.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P01-workbench/P01.ipynb) | [P01_S24CSEU0497.ipynb](P01_S24CSEU0497.ipynb) | [requirements](P01_requirements.txt) · [my_requirements](P01_my_requirements.txt) | 7 / 7 PASS |
 | P02 | Your First Honest Model | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/README.md) · [P02.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/P02.ipynb) | [P02_S24CSEU0497.ipynb](P02_S24CSEU0497.ipynb) | — | 9 / 9 PASS |
 | P03 | Choosing a Model Honestly | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/README.md) · [P03.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/P03.ipynb) | [P03_S24CSEU0497.ipynb](P03_S24CSEU0497.ipynb) | [PDF submission](P03_S24CSEU0497.pdf) | 8 / 8 PASS |
+| P04 | From Notebook to Package | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/README.md) · [P04.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/P04.ipynb) | [P04_S24CSEU0497.ipynb](P04_S24CSEU0497.ipynb) | [delivery package (zip)](P04_S24CSEU0497_package.zip) | 9 / 9 PASS |
 
-P04–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md);
-P04 has now landed upstream and is not solved yet. This table gets a row as each one lands.
+P05–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md);
+P05 has now landed upstream and is not solved yet. This table gets a row as each one lands.
 
 ## P01 — Your MLOps Workbench
 
@@ -105,6 +106,52 @@ tuned forest's 2.69), trains in milliseconds, and its four coefficients can be
 explained to a restaurant owner. What that gives up is any effect that is not a
 straight line --- this dataset was built from a linear formula, so on messier real
 data the forest would likely win and the explainability would have to be traded away.
+
+
+## P04 --- From Notebook to Package
+
+The same P02 code, rearranged: cells become functions, functions are grouped by
+job into modules, and the modules become a package Python can `import`. Nothing
+about what the code does changed --- only its address.
+
+```
+work/
+  delivery/
+    __init__.py     re-exports the names the rest of the project imports
+    data.py         load the CSV, split it
+    features.py     describe and measure one order
+    model.py        train, score, save, load
+    validate.py     decide whether one order is usable        (T2)
+  train.py          train from the command line
+  predict.py        predict one order from the command line   (T3)
+```
+
+The rule the practical enforces is **one sentence per module**. If a module
+needs two sentences it is doing two jobs and wants splitting.
+
+- **T1** --- `average_speed_kmph(distance_km, delivery_min)` appended to
+  `features.py`. Ten km in thirty minutes is 20 km/h. Written as two lines ---
+  convert minutes to hours, then divide --- because the whole bug risk here is
+  that the data is in minutes and the answer is per hour.
+- **T2** --- `validate.py` with `is_valid_order(order)`: four early `return False`
+  guards (`distance_km > 0`, `prep_time_min >= 0`, `traffic_level in (1, 2, 3)`,
+  `rain in (0, 1)`), then `return True`. Early returns rather than one long `and`
+  chain so each rule can be read, and failed, on its own.
+- **T3** --- `predict.py` loads `model.joblib` via `Path(__file__).parent`, not a
+  relative path, so it runs from any working directory. A 7 km order with 25 min
+  prep, traffic 3, no rain: **PREDICTION: 56.5** minutes.
+
+`python train.py <csv>` reports 600 rows and **MAE 1.92** --- the same number the
+notebook produced in P03, which is the point: the refactor moved the code without
+changing the result. Exit code `0`, which is how the pipeline in P11 will decide
+whether to carry on.
+
+The notebook was run with **Restart Kernel and Clear All Outputs**, then top to
+bottom in one pass --- execution counts 1 to 16 with no gaps. A package that only
+works with the state one session happens to be holding does not work.
+[P04_S24CSEU0497_package.zip](P04_S24CSEU0497_package.zip) holds the seven files
+above; it was unzipped into an empty folder and both scripts run there before
+being committed. `model.joblib` is not in the zip --- `train.py` regenerates it.
 
 
 ## Environment note
