@@ -29,9 +29,10 @@ notebooks, briefs and datasets stay in the course repo above.
 | P02 | Your First Honest Model | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/README.md) · [P02.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P02-first-model/P02.ipynb) | [P02_S24CSEU0497.ipynb](P02_S24CSEU0497.ipynb) | — | 9 / 9 PASS |
 | P03 | Choosing a Model Honestly | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/README.md) · [P03.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/P03.ipynb) | [P03_S24CSEU0497.ipynb](P03_S24CSEU0497.ipynb) | [PDF submission](P03_S24CSEU0497.pdf) | 8 / 8 PASS |
 | P04 | From Notebook to Package | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/README.md) · [P04.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/P04.ipynb) | [P04_S24CSEU0497.ipynb](P04_S24CSEU0497.ipynb) | [delivery package (zip)](P04_S24CSEU0497_package.zip) · [PDF submission](P04_S24CSEU0497.pdf) | 9 / 9 PASS |
+| P05 | Settings in a File, Bugs Caught by a Robot | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/README.md) · [P05.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/P05.ipynb) | [P05_S24CSEU0497.ipynb](P05_S24CSEU0497.ipynb) | [PDF submission](P05_S24CSEU0497.pdf) | 9 / 9 PASS |
 
-P05–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md);
-P05 has now landed upstream and is not solved yet. This table gets a row as each one lands.
+P06–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
+and are not solved yet. This table gets a row as each one lands.
 
 ## P01 — Your MLOps Workbench
 
@@ -153,6 +154,48 @@ works with the state one session happens to be holding does not work.
 above; it was unzipped into an empty folder and both scripts run there before
 being committed. `model.joblib` is not in the zip --- `train.py` regenerates it.
 
+
+## P05 --- Settings in a File, Bugs Caught by a Robot
+
+Two habits: move hardcoded numbers into `config.yaml` and read it with
+`yaml.safe_load`, then write `pytest` tests so a machine checks the code
+instead of a human eyeballing output.
+
+```
+work/
+  config.yaml      data path, features, target, split, training settings
+  orders.py        minutes_per_km(), is_valid_order()
+  test_orders.py   4 tests for orders.py (given)
+  test_speed.py    2 tests for minutes_per_km              (T2)
+  test_model.py    3 behaviour tests for the model, +1 more (T3)
+  conftest.py      shared fixtures: config, split, trained_model, model_mae, baseline_mae
+```
+
+- **T1** --- added a `training: {max_rows: 300}` section and
+  `train_limited(config, data_path)`, which slices the data with
+  `.head(max_rows)` before the usual split/train/score. Training on only
+  the first 300 orders instead of 600 gives **MAE 2.18** against the
+  full-data 1.92 --- worse, because half as much training data gives the
+  model less to learn from, which is exactly the kind of thing a config
+  setting should make easy to see.
+- **T2** --- `work/test_speed.py`: `test_slow_delivery` asserts
+  `minutes_per_km(60, 6) == 10.0`, and `test_negative_distance_raises`
+  asserts a distance of `-3` raises `ValueError`. Full suite: **10 passed**.
+- **T3** --- appended `test_heavier_traffic_is_never_faster` to
+  `test_model.py`: traffic level 3 must predict at least as long as level 1
+  for the same order, using the `trained_model` fixture. Full suite still
+  **10 passed**, exit code 0.
+
+Why `assert mae == 2.03` would be a bad test: the exact MAE moves with the
+random seed, the scikit-learn version, or one extra row of data, so the
+assert would fail on a perfectly good model without saying anything about
+whether the model actually behaves correctly. The behaviour tests above
+check shapes that must hold regardless --- rain never speeds up a delivery,
+further is never faster, the model beats guessing --- which is why they
+survive changes that would break an exact-number assert.
+
+`pytest` was missing from the course venv and had to be installed before
+Step 0's check passed; everything else matched `requirements-lock.txt`.
 
 ## Environment note
 
