@@ -30,8 +30,9 @@ notebooks, briefs and datasets stay in the course repo above.
 | P03 | Choosing a Model Honestly | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/README.md) · [P03.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P03-model-choice/P03.ipynb) | [P03_S24CSEU0497.ipynb](P03_S24CSEU0497.ipynb) | [PDF submission](P03_S24CSEU0497.pdf) | 8 / 8 PASS |
 | P04 | From Notebook to Package | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/README.md) · [P04.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/P04.ipynb) | [P04_S24CSEU0497.ipynb](P04_S24CSEU0497.ipynb) | [delivery package (zip)](P04_S24CSEU0497_package.zip) · [PDF submission](P04_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P05 | Settings in a File, Bugs Caught by a Robot | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/README.md) · [P05.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/P05.ipynb) | [P05_S24CSEU0497.ipynb](P05_S24CSEU0497.ipynb) | [PDF submission](P05_S24CSEU0497.pdf) | 9 / 9 PASS |
+| P06 | Remembering Every Experiment | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/README.md) · [P06.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/P06.ipynb) | [P06_S24CSEU0497.ipynb](P06_S24CSEU0497.ipynb) | [PDF submission](SCSE3040_P06_S24CSEU0497.pdf) | 8 / 8 PASS |
 
-P06–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
+P07–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
 and are not solved yet. This table gets a row as each one lands.
 
 ## P01 — Your MLOps Workbench
@@ -203,6 +204,38 @@ screenshot of the pytest run, and the before/after MAE line --- followed by
 every walkthrough and task cell, unmodified. `P05_S24CSEU0497.pdf` is that
 full notebook printed with Jupyter's own classic styling, so both files show
 the same thing.
+
+## P06 --- Remembering Every Experiment
+
+Every training run now logs its own parameters, metrics and tags to a SQLite-
+backed MLflow store (`work/mlflow.db`) instead of living only in notebook
+output. Eleven runs total: the first-try baseline, a five-point Random Forest
+sweep, a registered "champion", and the T1/T3 task runs.
+
+- **T1** --- one run named `linear-baseline`, logging `model_type` and
+  `mae_minutes` for a plain `LinearRegression`. Its error, **1.9247
+  minutes**, turned out lower than every Random Forest run in the sweep ---
+  including the "champion" picked by Step 8's logic, which only ever
+  compared RF settings against each other.
+- **T2** --- `mlflow.search_runs(order_by=["metrics.mae_minutes ASC"])`,
+  queried without looking at any earlier cell output: `T2_best_name =
+  linear-baseline`, `T2_best_mae = 1.9247`.
+- **T3** --- a `DecisionTreeRegressor` sweep at depths `[2, 4, 6]`, each run
+  tagged `family=tree`. `T3_tree_runs = 3`, confirmed by
+  `filter_string="tags.family = 'tree'"`.
+
+Self-check: **8 / 8 PASS**. `mlflow` and a pinned `skops==0.14.0` had to be
+installed into the course venv --- the newer `skops` default (0.16.0) refuses
+to deserialize `RandomForestRegressor`'s tree arrays as an "untrusted type",
+which breaks `mlflow.sklearn.log_model` on exactly the champion-model cell.
+
+Submission format for this practical is a single PDF named
+`SCSE3040_P06_S24CSEU0497.pdf` --- identification, repo link, a cropped
+MLflow runs-table screenshot (`linear-baseline`, `rf-n200-dNone`,
+`rf-n50-d4` ticked, params and metrics as columns), the run detail page for
+the chosen best run, and the run ID / metric / reasoning for that choice ---
+folded into the notebook as its first cells, ahead of the unmodified
+walkthrough, exactly as was done for P05.
 
 ## Environment note
 
