@@ -197,6 +197,11 @@ survive changes that would break an exact-number assert.
 `pytest` was missing from the course venv and had to be installed before
 Step 0's check passed; everything else matched `requirements-lock.txt`.
 
+`P05_S24CSEU0497.pdf` is the instructor's required submission format for this
+practical --- identification block, repo link, `config.yaml` contents, a
+cropped terminal screenshot of the pytest run, and the before/after MAE line
+--- rather than a full print of the notebook.
+
 ## Environment note
 
 My local venv drifted from the course lock file. Recorded here because a
