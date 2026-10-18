@@ -31,8 +31,9 @@ notebooks, briefs and datasets stay in the course repo above.
 | P04 | From Notebook to Package | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/README.md) · [P04.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P04-package/P04.ipynb) | [P04_S24CSEU0497.ipynb](P04_S24CSEU0497.ipynb) | [delivery package (zip)](P04_S24CSEU0497_package.zip) · [PDF submission](P04_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P05 | Settings in a File, Bugs Caught by a Robot | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/README.md) · [P05.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/P05.ipynb) | [P05_S24CSEU0497.ipynb](P05_S24CSEU0497.ipynb) | [PDF submission](P05_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P06 | Remembering Every Experiment | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/README.md) · [P06.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/P06.ipynb) | [P06_S24CSEU0497.ipynb](P06_S24CSEU0497.ipynb) | [PDF submission](SCSE3040_P06_S24CSEU0497.pdf) | 8 / 8 PASS |
+| P07 | Putting the Model Behind an Address | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/README.md) · [P07.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/P07.ipynb) | [P07_S24CSEU0497.ipynb](P07_S24CSEU0497.ipynb) | [app.py](P07_app.py) · [register_and_promote.py](P07_register_and_promote.py) · [request.json](P07_request.json) | 9 / 9 PASS |
 
-P07–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
+P08–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
 and are not solved yet. This table gets a row as each one lands.
 
 ## P01 — Your MLOps Workbench
@@ -236,6 +237,51 @@ MLflow runs-table screenshot (`linear-baseline`, `rf-n200-dNone`,
 the chosen best run, and the run ID / metric / reasoning for that choice ---
 folded into the notebook as its first cells, ahead of the unmodified
 walkthrough, exactly as was done for P05.
+
+## P07 --- Putting the Model Behind an Address
+
+The model goes behind an HTTP endpoint. Two ways of doing it:
+
+**FastAPI (the course notebook).** `P07_app.py` serves `GET /health`,
+`POST /predict` and `GET /model-info`, with a pydantic `Order` schema that
+rejects impossible input with `422` before the model ever runs. Tested with
+`TestClient`, no server needed.
+
+- **T1** --- `GET /model-info` returns `features`, `model_type`
+  (`LinearRegression`) and `version` (`1.0.0`).
+- **T2** --- the same 3 km order through `/predict`: **29.5 min** dry,
+  **35.0 min** in rain --- the 5.5-minute rain coefficient again.
+- **T3** --- `distance_km` limit tightened from `le=50` to `le=25`: a 30 km
+  order now gets `422`, a 10 km order still gets `200`, and the new maximum
+  shows up in `/openapi.json`.
+
+**MLflow serving (the PDF submission).** `P07_register_and_promote.py` trains
+the linear model, registers it as `delivery-time-model`, and moves version 1
+to the `Production` stage (plus a `production` alias, since stages are
+deprecated in MLflow 3). It is then served with
+
+```
+python -m mlflow models serve -m "models:/delivery-time-model/Production" -p 5001 --env-manager local
+```
+
+and queried with `curl.exe ... -d "@request.json"` →
+`{"predictions": [43.01]}`, the same 43.0 minutes the FastAPI service gives
+for that order.
+
+| | |
+|---|---|
+| Registered model | `delivery-time-model` |
+| Version promoted | 1 |
+| Run ID | `32078c0c7b8f417cb0106e619e8d46fb` |
+| Port | 5001 |
+
+On Windows `mlflow models serve` failed with `FileNotFoundError` until the
+user `Scripts` folder (where `uvicorn.exe` lives) was put on `PATH` --- it
+launches `uvicorn` as a separate program, not via `python -m`.
+
+The submission block --- identification, registry screenshot, serve terminal,
+curl request and the model details --- sits in the notebook's first cells,
+ahead of the unmodified walkthrough, as for P05 and P06.
 
 ## Environment note
 
