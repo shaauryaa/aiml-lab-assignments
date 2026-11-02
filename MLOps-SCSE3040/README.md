@@ -32,6 +32,7 @@ notebooks, briefs and datasets stay in the course repo above.
 | P05 | Settings in a File, Bugs Caught by a Robot | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/README.md) · [P05.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P05-config-tests/P05.ipynb) | [P05_S24CSEU0497.ipynb](P05_S24CSEU0497.ipynb) | [PDF submission](P05_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P06 | Remembering Every Experiment | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/README.md) · [P06.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P06-mlflow/P06.ipynb) | [P06_S24CSEU0497.ipynb](P06_S24CSEU0497.ipynb) | [PDF submission](SCSE3040_P06_S24CSEU0497.pdf) | 8 / 8 PASS |
 | P07 | Putting the Model Behind an Address | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/README.md) · [P07.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/P07.ipynb) | [P07_S24CSEU0497.ipynb](P07_S24CSEU0497.ipynb) | [app.py](P07_app.py) · [register_and_promote.py](P07_register_and_promote.py) · [request.json](P07_request.json) · [PDF submission](SCSE3040_P07_S24CSEU0497.pdf) | 9 / 9 PASS |
+| P08 | Packing the Service into a Container | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P08-docker/README.md) · [P08.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P08-docker/P08.ipynb) | [P08_S24CSEU0497.ipynb](P08_S24CSEU0497.ipynb) | [P08_docker/](P08_docker) | 9 / 9 PASS |
 
 P08–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
 and are not solved yet. This table gets a row as each one lands.
@@ -308,3 +309,9 @@ cd P01-workbench
 
 Work down the notebook with **Shift + Enter**, in order from the top. If it
 goes wrong: **Kernel → Restart Kernel and Clear All Outputs**, then start again.
+
+## P08 --- Packing the Service into a Container
+
+`P08_docker/` holds the delivery-time service as built into the image: `Dockerfile`,
+`.dockerignore`, `app.py`, `model.joblib` and `requirements.txt`. The same folder is the
+build context for the public deployment on Render.
