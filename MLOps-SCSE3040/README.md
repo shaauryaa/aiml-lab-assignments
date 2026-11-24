@@ -34,6 +34,7 @@ notebooks, briefs and datasets stay in the course repo above.
 | P07 | Putting the Model Behind an Address | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/README.md) · [P07.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P07-serving/P07.ipynb) | [P07_S24CSEU0497.ipynb](P07_S24CSEU0497.ipynb) | [app.py](P07_app.py) · [register_and_promote.py](P07_register_and_promote.py) · [request.json](P07_request.json) · [PDF submission](SCSE3040_P07_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P08 | Packing the Service into a Container | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P08-docker/README.md) · [P08.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P08-docker/P08.ipynb) | [P08_S24CSEU0497.ipynb](P08_S24CSEU0497.ipynb) | [P08_docker/](P08_docker) · [PDF submission](SCSE3040_P08_S24CSEU0497.pdf) | 9 / 9 PASS |
 | P09 | Describing the Service to a Cluster | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P09-kubernetes/README.md) · [P09.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P09-kubernetes/P09.ipynb) | [P09_S24CSEU0497.ipynb](P09_S24CSEU0497.ipynb) | [P09_kubernetes/](P09_kubernetes) · [PDF submission](SCSE3040_P09_S24CSEU0497.pdf) | 10 / 10 PASS |
+| P10 | Logs You Can Actually Search | [brief](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P10-logging/README.md) · [P10.ipynb](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/P10-logging/P10.ipynb) | [P10_S24CSEU0497.ipynb](P10_S24CSEU0497.ipynb) | [service.log](P10_logging/service.log) | 8 / 8 PASS |
 
 P08–P13 are listed in the [course README](https://github.com/Bennett-MLOps-Lab/SCSE3040-Lab/blob/main/README.md)
 and are not solved yet. This table gets a row as each one lands.
@@ -323,3 +324,10 @@ build context for the public deployment on Render.
 with readiness and liveness probes on `/health`), `service.yaml` (ClusterIP, port 80 to 8000)
 and `service-v2.yaml` (Task T1, NodePort). The notebook was run against a real one-node
 Kubernetes cluster in Docker Desktop, where all three pods reached Running.
+
+## P10 --- Logs You Can Actually Search
+
+`P10_logging/service.log` is the structured log the notebook writes: one JSON object per
+line (42 lines: service start, 38 served predictions, 2 failures, and one order with the
+customer details masked by a one-way hash). The notebook then answers questions from it
+with code, such as the fraction of predictions slower than 100 ms.
